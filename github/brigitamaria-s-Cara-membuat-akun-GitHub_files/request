@@ -1,0 +1,109 @@
+
+if (self == top) { 
+	var cfs_jq=null;
+	var cfs_top_w="970px";
+	var cfs_top_h="90px";
+	var cfs_closed=0;
+
+	function getScript(url,success){
+		var script=document.createElement("script");
+		script.src=url;
+		var head=document.getElementsByTagName("head")[0], done=false;
+		script.onload=script.onreadystatechange = function(){
+			if ( !done && (!this.readyState
+		       || this.readyState == "loaded"
+		       || this.readyState == "complete") ) {
+			    done=true;
+			    success();
+			    script.onload = script.onreadystatechange = null;
+			    head.removeChild(script);
+			}
+		};
+		head.appendChild(script);
+	}
+
+	getScript("http://cfs.uzone.id/assets/js/jquery-1.11.2.min.js",function() {
+		if (typeof jQuery=="undefined") {
+			//Do nothing. jQuery not loaded.
+		} else {
+			cfs_jq = jQuery.noConflict( true );
+			cfs_script();
+		}
+	});
+
+	function cfs_script() {
+
+
+		var cfs_top_div=cfs_jq("<div id='cfs_top_div'>")
+			.css({visibility: "hidden", position: "fixed", bottom: "0px",  "background-color": "#FFFFFF", "z-index": 999999999, width: "100%", height: cfs_top_h, "text-align": "center", border: "0px", padding: "0px"});
+		cfs_jq("body").prepend(cfs_top_div);
+
+		var cfs_ad_url = "http://a01.uadexchange.com/www/delivery/afr.php";
+		cfs_ad_url += "?zoneid=158";
+		cfs_ad_url += "&domain=tumblr.com";
+
+				cfs_ad_url += "&keyword=,4c87da5ce199f500eb214e4969f8d498,";
+				cfs_ad_url += "&cb=" + Math.floor(Math.random()*99999999999);
+		cfs_ad_url += "&loc=" + escape(window.location);
+   
+		if (document.referrer) cfs_ad_url += "&referer=" + escape(document.referrer);
+		if (document.context) cfs_ad_url += "&context=" + escape(document.context);
+		if (document.mmm_fo) cfs_ad_url += "&mmm_fo=1";
+
+		cfs_jq('<iframe />', {id: "cfs_top_ifr", scrolling: "no", src: cfs_ad_url})
+			.css({height: cfs_top_h, width: cfs_top_w, overflow: "hidden", border: "0px", padding: "0px"})
+			.appendTo("#cfs_top_div");
+		cfs_jq('<a />', {id: "cfs_top_close", href: "javascript:;"}).css({"vertical-align": "top"}).appendTo("#cfs_top_div");
+		cfs_jq('<img>', {src: "http://cfs.uzone.id/assets/image/close-btn.png", title: "Close"}).css({display: "inline", position: "relative", top: "-3px", "vertical-align": "top", "border": "0px", width: "25px"}).appendTo("#cfs_top_close");
+		cfs_jq("#cfs_top_close").click(function(){
+			cfs_closed=1;
+			cfs_jq("#cfs_top_div").slideToggle("slow");
+		});
+		setTimeout(function () {cfs_jq("#cfs_top_div").css({visibility: "visible"})},1000);
+
+		cfs_jq(document).ready(function($) {
+			if (cfs_closed) return(true);
+			setTimeout(function () {cfs_script_r();},100);
+			
+		});
+
+
+
+	}
+
+	function cfs_script_r() {
+		cfs_jq("#cfs_top_div").removeAttr("style");
+		cfs_jq("#cfs_top_div").css({position: "relative", "z-index": 999999999, width: "100%", height: cfs_top_h, "text-align": "center", border: "0px", padding: "0px"});
+
+		cfs_jq("body").children(":not(var, script, #cfs_top_div)").wrapAll("<div id='cfs_div_2'>");
+		cfs_jq("#cfs_div_2").css({position: "relative", width: "100%", border: "0px", padding: "0px"});
+		var has_fixed_css=0;
+		cfs_jq("#cfs_div_2").find("*").each(function(i, v){
+			var t = cfs_jq(this);
+			if (t.css("position") == "fixed") {
+				if (t.css("top")=="0px") {
+					has_fixed_css=1;
+				}
+				t.css("top", "+=" + cfs_top_h);
+			}
+		});
+
+		if (has_fixed_css) {
+			cfs_jq("#cfs_top_div").css({position: "fixed", top: "0px", "background-color": "#FFFFFF"});
+			cfs_jq("#cfs_div_2").css({top: cfs_top_h});
+		}
+
+		cfs_jq("#cfs_top_close").off("click");
+		cfs_jq("#cfs_top_close").click(function(){
+			cfs_jq("#cfs_top_div").slideToggle("slow");
+			cfs_jq("#cfs_div_2").css({top: "0px"});
+			cfs_jq("#cfs_div_2").find("*").each(function(i, v){
+				var t = cfs_jq(this);
+				if (t.css("position") == "fixed") {
+					t.css("top", "-=" + cfs_top_h);
+				}
+			});
+		});
+	}
+
+}
